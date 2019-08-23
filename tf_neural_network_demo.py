@@ -72,15 +72,15 @@ def plot_image(i, predictions_array, true_label, img):
     plt.grid(False)
     plt.xticks([])
     plt.yticks([])
-    
+
     plt.imshow(img, cmap=plt.cm.binary)
-    
+
     predicted_label = np.argmax(predictions_array)
     if predicted_label == true_label:
         color = 'blue'
     else:
         color = 'red'
-    
+
     plt.xlabel("{} {:2.0f}% ({})".format(class_names[predicted_label],
                                   100*np.max(predictions_array),
                                   class_names[true_label]),
