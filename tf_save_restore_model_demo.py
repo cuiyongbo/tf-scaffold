@@ -88,7 +88,6 @@ print("Restored model, accuracy: {:5.2f}%".format(100*acc))
 model = create_model()
 model.fit(train_images, train_labels, epochs=5)
 model.save('my_model.h5') # Save entire model to a HDF5 file
-
 new_model = keras.models.load_model('my_model.h5')
 new_model.summary()
 
