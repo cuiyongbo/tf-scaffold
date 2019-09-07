@@ -66,3 +66,5 @@ batch_size = 100
 est.train(
     steps=1000,
     input_fn=lambda : iris_data.csv_input_fn(train_path, batch_size))
+
+AUTOTUNE = tf.data.experimental.AUTOTUNE
