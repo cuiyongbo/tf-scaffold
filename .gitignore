@@ -5,4 +5,5 @@
 /mnist_datasets
 /check_points
 /img_store
-
+/cvae_imgs
+/dcan_imgs

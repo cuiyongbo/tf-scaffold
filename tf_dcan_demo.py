@@ -6,7 +6,9 @@ import numpy as np
 import glob, imageio, os, PIL, time
 from IPython import display
 
- data_path = os.getcwd() + '/mnist_datasets/handwritten-digits/mnist.npz'
+tf.enable_eager_execution()
+
+data_path = os.getcwd() + '/mnist_datasets/handwritten-digits/mnist.npz'
 (train_images, train_labels), (_, _) = tf.keras.datasets.mnist.load_data(data_path)
 
 train_images = train_images.reshape(train_images.shape[0], 28, 28, 1).astype('float32')
