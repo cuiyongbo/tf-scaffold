@@ -3,3 +3,6 @@
 *.gz
 /MNIST_data
 /mnist_datasets
+/check_points
+/img_store
+
