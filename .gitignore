@@ -4,6 +4,7 @@
 /MNIST_data
 /mnist_datasets
 /check_points
-/img_store
+/image_store
 /cvae_imgs
 /dcan_imgs
+.DS_Store
