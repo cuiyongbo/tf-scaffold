@@ -45,6 +45,6 @@ def save_display_image(a, fmt='jpeg'):
     with open("mandelbrot_set.{}".format(fmt), "wb") as f:
         pi = PIL.Image.fromarray(a)
         pi.save(f)
-    pi.show()
+        pi.show()
 
 save_display_image(ns.eval())
