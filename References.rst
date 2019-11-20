@@ -11,3 +11,4 @@ References to learning material sites.
 .. [#] `tensorflow online documentation <https://tensorflow.google.cn/overview/>`_
 .. [#] `Fash mnist <https://github.com/zalandoresearch/fashion-mnist>`_
 .. [#] `Detailed Machine Learning materials <https://developers.google.cn/machine-learning/crash-course>`_
+.. [#] `OpenNMT <https://github.com/OpenNMT>`_
