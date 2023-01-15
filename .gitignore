@@ -1,4 +1,4 @@
-/__pycache__
+__pycache__/
 *.pyc
 *.gz
 /MNIST_data
@@ -8,4 +8,13 @@
 /cvae_imgs
 /dcan_imgs
 .DS_Store
-/log
+log/
+logs/
+*.log
+build/
+_build/
+*.o
+*.dYSM
+*.out
+cpp-examples/libtensorflow/
+
