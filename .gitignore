@@ -16,5 +16,10 @@ _build/
 *.o
 *.dYSM
 *.out
+cpp-examples/libtensorflow
 cpp-examples/libtensorflow/
+cpp-examples/data/
+cpp-examples/libtensorflow-2.11/
+hello_tf
+label_image
 
