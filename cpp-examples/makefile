@@ -1,5 +1,40 @@
 
 # how to build tensorflow c lib: https://www.tensorflow.org/install/lang_c
+# if you use macos, following these steps:
+# 1. install bazel with bazelisk: brew install bazelisk
+# 2. download tensorflow source code, and build c++ library: bazel build --verbose_failures //tensorflow:tensorflow_cc
+#	and take bazel-bin/tensorflow/libtensorflow_cc.2.11.0.dylib
+# download tensorflow source code, and build c++ headers:  bazel build --verbose_failures //tensorflow:install_headers
+# if bazel failed to build install_headers, then try the following
+#	download tensorflow pip package:
+#		for macbook with m1 chip: https://developer.apple.com/metal/tensorflow-plugin/ 
+# 		pip download tensorflow-macos
+# 	extract wheel file: python -m --extract tensorflow_macos-{version}.whl
+# 	take following directories and files:
+#		drwxr-xr-x  10 bytedance  staff   320B Jan 19 21:11 include
+#		-rw-r--r--   1 bytedance  staff    31M Jan 19 21:11 libtensorflow_framework.2.11.0.dylib
+#		-rw-r--r--   1 bytedance  staff    31M Jan 19 21:11 libtensorflow_framework.2.dylib
+#		-rw-r--r--   1 bytedance  staff    31M Jan 19 21:11 libtensorflow_framework.dylib
+#  and oragnize previous files and directories as follows:
+# 		> tree -L 2 libtensorflow/
+# 		libtensorflow/
+# 		├── include
+# 		│   ├── Eigen
+# 		│   ├── absl
+# 		│   ├── external
+# 		│   ├── google
+# 		│   ├── include
+# 		│   ├── tensorflow
+# 		│   ├── third_party
+# 		│   └── unsupported
+# 		└── lib
+# 		    ├── libtensorflow_cc.2.11.0.dylib
+# 		    ├── libtensorflow_cc.2.dylib -> libtensorflow_cc.2.11.0.dylib
+# 		    ├── libtensorflow_cc.dylib -> libtensorflow_cc.2.dylib
+# 		    ├── libtensorflow_framework.2.11.0.dylib
+# 		    ├── libtensorflow_framework.2.dylib -> libtensorflow_framework.2.11.0.dylib
+# 		    └── libtensorflow_framework.dylib -> libtensorflow_framework.2.dylib
+
 cur_dir=${shell pwd}
 TF_HEADER_DIR = ${cur_dir}/libtensorflow/include
 TF_LIBRARY_DIR = ${cur_dir}/libtensorflow/lib
