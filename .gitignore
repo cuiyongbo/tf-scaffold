@@ -21,5 +21,7 @@ cpp-examples/libtensorflow/
 cpp-examples/data/
 cpp-examples/libtensorflow-2.11/
 hello_tf
-label_image
+label_image_main
+wav_to_spectrogram_main
+*.png
 

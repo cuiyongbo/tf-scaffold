@@ -166,7 +166,7 @@ Status ReadTensorFromImageFile(const string& file_name, const int input_height,
   auto resized = ResizeBilinear(
       root, dims_expander,
       Const(root.WithOpName("size"), {input_height, input_width}));
-  // Subtract the mean and divide by the scale.
+  // Subtract the mean and divide by the scale. ((x-mu)/sigma)
   Div(root.WithOpName(output_name), Sub(root, resized, {input_mean}),
       {input_std});
 
@@ -323,7 +323,7 @@ int main(int argc, char* argv[]) {
 
   // First we load and initialize the model.
   std::unique_ptr<tensorflow::Session> session;
-  string graph_path = tensorflow::io::JoinPath(root_dir, graph);
+  std::string graph_path = tensorflow::io::JoinPath(root_dir, graph);
   Status load_graph_status = LoadGraph(graph_path, &session);
   if (!load_graph_status.ok()) {
     LOG(ERROR) << load_graph_status;
