@@ -35,6 +35,11 @@
 # 		    ├── libtensorflow_framework.2.dylib -> libtensorflow_framework.2.11.0.dylib
 # 		    └── libtensorflow_framework.dylib -> libtensorflow_framework.2.dylib
 
+# some useful references:
+#. https://tensorflow.google.cn/guide/basics
+#. https://github.com/tensorflow/docs/blob/master/site/en/r1/guide/extend/architecture.md
+#. https://github.com/tensorflow/docs/blob/master/site/en/r1/guide/extend/cc.md
+
 cur_dir=${shell pwd}
 export TF_HEADER_DIR = ${cur_dir}/libtensorflow/include
 export TF_LIBRARY_DIR = ${cur_dir}/libtensorflow/lib
@@ -65,18 +70,22 @@ CXXFLAGS += -ltensorflow_framework
 # Undefined symbols for architecture arm64: "tsl::io::internal::JoinPathImpl
 CXXFLAGS += -std=c++1z # use c++17 standard
 
-TARGET_LIST = hello_tf label_image_main wav_to_spectrogram_main
+TARGET_LIST = hello_tf_main label_image_main wav_to_spectrogram_main basic_operations_main
 all: ${TARGET_LIST}
 
 # makefile:23: *** missing separator.  Stop.
 # indent using tab, and convert space to tab
-hello_tf: hello_tf.cpp
+hello_tf_main: hello_tf.cpp
 	${CXX} ${CXXFLAGS} $? -o $@
-	#./hello_tf
+	./hello_tf_main
+
+basic_operations_main: basic_operations.cpp
+	${CXX} ${CXXFLAGS} $? -o $@
+	./basic_operations_main
 
 label_image_main: label_image/label_image.cpp
 	${CXX} ${CXXFLAGS} $? -o $@
-	./label_image_main --image=./data/grace_hopper.jpg --graph=./data/inception_v3_2016_08_28_frozen.pb --labels=./data/imagenet_slim_labels.txt
+	#./label_image_main --image=./data/grace_hopper.jpg --graph=./data/inception_v3_2016_08_28_frozen.pb --labels=./data/imagenet_slim_labels.txt
 
 wav_to_spectrogram/wav_to_spectrogram.o: wav_to_spectrogram/wav_to_spectrogram.cpp
 	${CXX} -c ${CXXFLAGS} $? -o $@

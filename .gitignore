@@ -20,7 +20,8 @@ cpp-examples/libtensorflow
 cpp-examples/libtensorflow/
 cpp-examples/data/
 cpp-examples/libtensorflow-2.11/
-hello_tf
+hello_tf_main
+basic_operations_main
 label_image_main
 wav_to_spectrogram_main
 *.png
