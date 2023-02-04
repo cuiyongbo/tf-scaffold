@@ -14,3 +14,4 @@ Project hierarchy:
     ├── entropy_and_cross_entropy.md
     ├── v1_scripts # scripts for tensorflow python tutorial
     └── v2_scripts # ditto
+

@@ -132,7 +132,6 @@ int hello_tf_v5() {
     std::cout << "DebugString Sub: " << outputs[0].DebugString() << std::endl;
   }
 
-
   {  
     auto scope = tensorflow::Scope::NewRootScope();
     auto a = tensorflow::ops::PlaceholderWithDefault(scope.WithOpName("A"), tensorflow::Input(8), tensorflow::PartialTensorShape());
