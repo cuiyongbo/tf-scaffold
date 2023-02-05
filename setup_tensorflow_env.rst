@@ -10,7 +10,7 @@ Setup Tensorflow for R&D
 
     - Install using docker (*recommended*)
 
-        .. code-block:: bash
+        .. code-block:: sh
 
             docker pull tensorflow/tensorflow:latest  # Download latest stable image
             docker run -it -p 8888:8888 tensorflow/tensorflow:latest-jupyter  # Start Jupyter server
@@ -26,18 +26,181 @@ Setup Tensorflow for R&D
 
         # fetch tfx image
         docker pull tensorflow/tfx
-
         # if you encounter 'No id provided.' error when running tfx container, you may need specify `--entrypoint` option
         docker run -it --mount type=bind,src=$(pwd),dst=/workspace --entrypoint bash tensorflow/tfx
         #docker run -p 33243:6006 -ti --entrypoint bash --mount type=bind,src=/opt/home/cuiyongbo/docker-scaffold,dst=/workspace 0fbc116a552e
-
         cd && mkdir .keras && cd .keras/ && ln -fs /workspace/datasets/ datasets
-
         # attach to a running container
         docker container exec -it bffd65ffbadb bash
-
         # install tensorflow-doc
         pip3 install git+https://github.com/tensorflow/docs
+
+#. `start tensorflow-serving with docker <https://tensorflow.google.cn/tfx/serving/docker>`_
+
+    .. code-block:: sh
+
+        # Download the TensorFlow Serving Docker image and repo
+        docker pull tensorflow/serving
+        # docker pull emacski/tensorflow-serving # for macbook with m1 chip
+
+        # clone tensorflow-serving for model demos
+        git clone https://github.com/tensorflow/serving
+        # Location of demo models
+        TESTDATA="$(pwd)/serving/tensorflow_serving/servables/tensorflow/testdata"
+
+        # peek model structure with saved_model_cli
+        saved_model_cli show --dir $TESTDATA/saved_model_half_plus_two_cpu/00000123/ --tag_set serve
+        The given SavedModel MetaGraphDef contains SignatureDefs with the following keys:
+        SignatureDef key: "classify_x_to_y"
+        SignatureDef key: "regress_x2_to_y3"
+        SignatureDef key: "regress_x_to_y"
+        SignatureDef key: "regress_x_to_y2"
+        SignatureDef key: "serving_default"
+
+        saved_model_cli show --dir $TESTDATA/saved_model_half_plus_two_cpu/00000123/ --tag_set serve --signature_def serving_default
+        The given SavedModel SignatureDef contains the following input(s):
+        inputs['x'] tensor_info:
+            dtype: DT_FLOAT
+            shape: (-1, 1)
+            name: x:0
+        The given SavedModel SignatureDef contains the following output(s):
+        outputs['y'] tensor_info:
+            dtype: DT_FLOAT
+            shape: (-1, 1)
+            name: y:0
+        Method name is: tensorflow/serving/predict
+
+        # Start TensorFlow Serving container and open the REST API port
+        docker run -t --rm -p 8501:8501 \
+            -v "$TESTDATA/saved_model_half_plus_two_cpu:/models/half_plus_two" \
+            -e MODEL_NAME=half_plus_two \
+            tensorflow/serving &
+
+        # Query the model using the predict API
+        curl -d '{"instances": [1.0, 2.0, 5.0]}' -X POST http://localhost:8501/v1/models/half_plus_two:predict
+        # Return: { "predictions": [2.5, 3.0, 4.5] }
+
+#. `more on tensorflow-serving <https://tensorflow.google.cn/tfx/serving/api_rest>`_
+
+    .. code-block:: sh
+
+        # load pre-trained mnist model demo
+        docker run -t --rm -p 8501:8501 -v'/tmp/mnist:/models/mnist' -e MODEL_NAME=mnist emacski/tensorflow-serving
+
+        # run inference with python
+        import requests, json
+        headers = {"content-type": "application/json"}
+        data = json.dumps({"signature_name": "serving_default", "instances": test_images[0:3].tolist()})
+        json_response = requests.post('http://localhost:8501/v1/models/mnist:predict', data=data, headers=headers)
+        pred = json_response.json()['predictions']
+        np.argmax(pred, axis=1)
+        # array([7, 2, 1])
+
+        # curl 'http://localhost:8501/v1/models/mnist'
+        {
+            "model_version_status": [
+                {
+                    "version": "2",
+                    "state": "AVAILABLE",
+                    "status": {
+                        "error_code": "OK",
+                        "error_message": ""
+                    }
+                },
+                {
+                    "version": "1",
+                    "state": "END",
+                    "status": {
+                        "error_code": "OK",
+                        "error_message": ""
+                    }
+                }
+            ]
+        }
+
+        # curl 'http://localhost:8501/v1/models/mnist/versions/3'
+        {
+         "model_version_status": [
+          {
+           "version": "3",
+           "state": "AVAILABLE",
+           "status": {
+            "error_code": "OK",
+            "error_message": ""
+           }
+          }
+         ]
+        }
+
+        # curl 'http://localhost:8501/v1/models/mnist/metadata'
+        {
+            "model_spec": {
+                "name": "mnist",
+                "signature_name": "",
+                "version": "2"
+            },
+            "metadata": {
+                "signature_def": {
+                    "signature_def": {
+                        "serving_default": {
+                            "inputs": {
+                                "dense_input": {
+                                    "dtype": "DT_FLOAT",
+                                    "tensor_shape": {
+                                        "dim": [
+                                            {
+                                                "size": "-1",
+                                                "name": ""
+                                            },
+                                            {
+                                                "size": "784",
+                                                "name": ""
+                                            }
+                                        ],
+                                        "unknown_rank": false
+                                    },
+                                    "name": "serving_default_dense_input:0"
+                                }
+                            },
+                            "outputs": {
+                                "dense_1": {
+                                    "dtype": "DT_FLOAT",
+                                    "tensor_shape": {
+                                        "dim": [
+                                            {
+                                                "size": "-1",
+                                                "name": ""
+                                            },
+                                            {
+                                                "size": "10",
+                                                "name": ""
+                                            }
+                                        ],
+                                        "unknown_rank": false
+                                    },
+                                    "name": "StatefulPartitionedCall:0"
+                                }
+                            },
+                            "method_name": "tensorflow/serving/predict"
+                        },
+                        "__saved_model_init_op": {
+                            "inputs": {},
+                            "outputs": {
+                                "__saved_model_init_op": {
+                                    "dtype": "DT_INVALID",
+                                    "tensor_shape": {
+                                        "dim": [],
+                                        "unknown_rank": true
+                                    },
+                                    "name": "NoOp"
+                                }
+                            },
+                            "method_name": ""
+                        }
+                    }
+                }
+            }
+        }
 
 #. python3 to start tensorboard: ``python3 -m tensorboard.main --logdir=/path/to/logs``
 
@@ -59,8 +222,3 @@ Setup Tensorflow for R&D
 
         # in bash add environment variable
         export TF_CPP_MIN_LOG_LEVEL=2
-
-
-.. rubric:: Footnotes
-
-.. [#] `tensorflow/playground <https://github.com/tensorflow/playground>`_

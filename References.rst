@@ -6,7 +6,6 @@ References to learning materials.
 
 .. rubric:: Footnotes
 
-
 .. [#] `tensorflow homepage <https://tensorflow.google.cn/>`_
 .. [#] `tensorflow tutorial <https://www.tensorflow.org/tutorials>`_
 .. [#] `tensorflow architecture <https://github.com/tensorflow/docs/blob/master/site/en/r1/guide/extend/architecture.md>`_

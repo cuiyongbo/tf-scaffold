@@ -52,7 +52,8 @@ $(info TF_LIBRARY_DIR: ${TF_LIBRARY_DIR})
 export LIBRARY_PATH := ${LIBRARY_PATH}:${TF_HEADER_DIR}
 export DYLD_LIBRARY_PATH := ${DYLD_LIBRARY_PATH}:${TF_LIBRARY_DIR}
 
-#export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(pwd)/libtensorflow/lib
+# add tensorflow libs to os env if you want to execute compiled binaries in shell
+# export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(pwd)/libtensorflow/lib
 
 # Undefined symbols for architecture arm64: "_TF_Version", referenced from: ** ld: symbol(s) not found for architecture arm64
 # add `-ltensorflow` when building TARGET_LIST
@@ -70,7 +71,10 @@ CXXFLAGS += -ltensorflow_framework
 # Undefined symbols for architecture arm64: "tsl::io::internal::JoinPathImpl
 CXXFLAGS += -std=c++1z # use c++17 standard
 
-TARGET_LIST = hello_tf_main label_image_main wav_to_spectrogram_main basic_operations_main
+TARGET_LIST = hello_tf_main \
+  			  basic_operations_main tensor_ops_main \
+			  label_image_main wav_to_spectrogram_main mnist_demo_main
+
 all: ${TARGET_LIST}
 
 # makefile:23: *** missing separator.  Stop.
@@ -79,9 +83,13 @@ hello_tf_main: hello_tf.cpp
 	${CXX} ${CXXFLAGS} $? -o $@
 	./hello_tf_main
 
-basic_operations_main: basic_operations.cpp
+basic_operations_main: basic_ops/basic_operations.cpp
 	${CXX} ${CXXFLAGS} $? -o $@
 	./basic_operations_main
+
+tensor_ops_main: basic_ops/tensor_ops.cpp
+	${CXX} ${CXXFLAGS} $? -o $@
+	./tensor_ops_main
 
 label_image_main: label_image/label_image.cpp
 	${CXX} ${CXXFLAGS} $? -o $@
@@ -91,6 +99,10 @@ wav_to_spectrogram/wav_to_spectrogram.o: wav_to_spectrogram/wav_to_spectrogram.c
 	${CXX} -c ${CXXFLAGS} $? -o $@
 wav_to_spectrogram_main: wav_to_spectrogram/main.cpp  wav_to_spectrogram/wav_to_spectrogram.o
 	${CXX} ${CXXFLAGS} $? -o $@
+
+mnist_demo_main: mnist_demo/mnist_demo.cpp
+	${CXX} ${CXXFLAGS} $? -o $@
+	./mnist_demo_main --image=./data/mnist_demo.jpg --graph=./data/mnist_cpu
 
 clean:
 	rm -rf ${TARGET_LIST} */*.o */*.out */*.dSYM

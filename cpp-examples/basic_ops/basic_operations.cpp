@@ -4,36 +4,6 @@
 #include <tensorflow/core/lib/io/path.h>
 #include <tensorflow/core/platform/env.h>
 
-void tensor_ops() {
-    auto scope = tensorflow::Scope::NewRootScope();
-
-    {
-        auto aScalar = tensorflow::Input(2);
-        std::cout << "Dimensions of a scalar: " << aScalar.tensor().shape().dims() << std::endl;
-        auto aVector = tensorflow::Input({2,3});
-        std::cout << "Dimensions of a vector: " << aVector.tensor().shape().dims() << std::endl;
-        auto aMatrix = tensorflow::Input({{2,3}, {7, 8}});
-        std::cout << "Dimensions of a matrix: " << aMatrix.tensor().shape().dims() << std::endl;
-    }
-
-    {
-        tensorflow::ClientSession session(scope);
-        // 2x2 matrix with all elements = 10
-        //auto c1 = tensorflow::ops::Const(scope, 10, {2,2}/*shape*/);
-        // how to print a Const ??
-        //std::cout << "Const value: " << c1.matrix<int>() << std::endl;
-        auto x = tensorflow::ops::MatMul(scope, {{1, 1}}, {{41}, {1}});
-        std::vector<tensorflow::Tensor> outputs;
-        auto status = session.Run({x}, &outputs);
-        TF_CHECK_OK(status);
-        std::cout << "MatMul result: " << outputs[0].flat<int>() << std::endl;
-        auto y = tensorflow::ops::Add(scope, {1,2,3,4}, 10);
-        status = session.Run({y}, &outputs);
-        TF_CHECK_OK(status);
-        std::cout << "Add result: " << outputs[0].flat<int>() << std::endl;
-    }
-}
-
 
 void basic_sesson_ops() {
     auto scope = tensorflow::Scope::NewRootScope();
@@ -74,7 +44,7 @@ void basic_sesson_ops() {
 
 
 int basic_io_ops() {
-    std::string file_path = "./basic_operations.cpp";
+    std::string file_path = "./data/scaffold.txt";
     auto env = tensorflow::Env::Default();
     auto status = env->FileExists(file_path);
     if (!status.ok()) {
@@ -113,8 +83,8 @@ int basic_io_ops() {
     return 0;
 }
 
+
 int main(int argc, char **argv) {
-    tensor_ops();
     basic_sesson_ops();
     basic_io_ops();
     return 0;

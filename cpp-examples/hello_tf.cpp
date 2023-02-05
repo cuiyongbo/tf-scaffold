@@ -1,14 +1,14 @@
 #include <stdio.h>
 
-#include <tensorflow/c/c_api.h>
-#include <tensorflow/cc/client/client_session.h>
-#include <tensorflow/cc/ops/standard_ops.h>
-#include <tensorflow/core/framework/tensor.h>
-#include <tensorflow/core/public/session.h>
+#include "tensorflow/c/c_api.h"
+#include "tensorflow/cc/client/client_session.h"
+#include "tensorflow/cc/ops/standard_ops.h"
+#include "tensorflow/core/framework/tensor.h"
+#include "tensorflow/core/public/session.h"
 
 
 void hello_tf_v1() {
-  std::cout << "run hello_tf_v1" << std::endl;
+  LOG(INFO) << "running " << __func__ << " ##################";
 
   // create a root scope
   auto scope = tensorflow::Scope::NewRootScope();
@@ -39,7 +39,8 @@ void hello_tf_v1() {
 
 
 tensorflow::Status hello_tf_v2() {
-  std::cout << "run hello_tf_v2" << std::endl;
+  LOG(INFO) << "running " << __func__ << " ##################";
+
 
   auto root = tensorflow::Scope::NewRootScope();
   auto hello = tensorflow::ops::Const(root.WithOpName("hello"), std::string("hello"));
@@ -64,7 +65,7 @@ tensorflow::Status hello_tf_v2() {
 
 
 void hello_tf_v3() {
-  std::cout << "run hello_tf_v3" << std::endl;
+  LOG(INFO) << "running " << __func__ << " ##################";
   tensorflow::Scope root = tensorflow::Scope::NewRootScope();
   // 2x2 Matrix A = [3 2; -1 0]
   auto A = tensorflow::ops::Const(root, { {3.f, 2.f}, {-1.f, 0.f} });
@@ -86,6 +87,7 @@ void hello_tf_v3() {
 
 
 int hello_tf_v4() {
+  LOG(INFO) << "running " << __func__ << " ##################";
   auto scope = tensorflow::Scope::NewRootScope();
   auto a = tensorflow::ops::Const(scope.WithOpName("A"), 23);
   auto b = tensorflow::ops::Const(scope.WithOpName("B"), 2);
@@ -110,7 +112,7 @@ int hello_tf_v4() {
 
 
 int hello_tf_v5() {
-
+  LOG(INFO) << "running " << __func__ << " ##################";
   {  
     auto scope = tensorflow::Scope::NewRootScope();
     auto a = tensorflow::ops::Const(scope.WithOpName("A"), 23);
