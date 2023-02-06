@@ -162,6 +162,125 @@ Method name is: tensorflow/serving/predict
 # ./mnist_demo_main --image=data/mnist_test_demo.jpg --graph=data/mnist/1 --input_layer=serving_default_dense_2_input:0 --output_layer=StatefulPartitionedCall:0
 */
 
+namespace tensorflow {
+namespace cc_op {
+// tensorflow/tensorflow/cc/ops/cc_op_gen_util.cc
+template <typename T>
+string PrintArray(int64_t num_elts, const T* array) {
+  string ret;
+  for (int64_t i = 0; i < num_elts; ++i) {
+    if (i > 0) strings::StrAppend(&ret, ", ");
+    strings::StrAppend(&ret, array[i]);
+  }
+  return ret;
+}
+
+std::string PrintTensorShape(const tensorflow::TensorShapeProto& shape_proto) {
+  tensorflow::PartialTensorShape shape(shape_proto);
+  if (shape.IsIdenticalTo(tensorflow::PartialTensorShape())) {
+    return "::tensorflow::PartialTensorShape() /* unknown */";
+  }
+  std::string ret = "{";
+  for (int d = 0; d < shape.dims(); ++d) {
+    if (d > 0) tensorflow::strings::StrAppend(&ret, ", ");
+    tensorflow::strings::StrAppend(&ret, shape.dim_size(d));
+  }
+  tensorflow::strings::StrAppend(&ret, "}");
+  return ret;
+}
+
+string PrintTensor(const TensorProto& tensor_proto) {
+  Tensor t(tensor_proto.dtype());
+  CHECK(t.FromProto(tensor_proto));
+  const int64_t num_elts = t.NumElements();
+  switch (t.dtype()) {
+    case DT_FLOAT:
+      return PrintArray(num_elts, t.flat<float>().data());
+    case DT_DOUBLE:
+      return PrintArray(num_elts, t.flat<double>().data());
+    case DT_INT32:
+      return PrintArray(num_elts, t.flat<int32>().data());
+    case DT_UINT8:
+    case DT_QUINT8:
+      return PrintArray(num_elts, t.flat<uint8>().data());
+    case DT_UINT16:
+    case DT_QUINT16:
+      return PrintArray(num_elts, t.flat<uint16>().data());
+    case DT_INT16:
+    case DT_QINT16:
+      return PrintArray(num_elts, t.flat<int16>().data());
+    case DT_INT8:
+    case DT_QINT8:
+      return PrintArray(num_elts, t.flat<int8>().data());
+    case DT_INT64:
+      return PrintArray(num_elts, t.flat<int64_t>().data());
+    case DT_BOOL:
+      return PrintArray(num_elts, t.flat<bool>().data());
+    case DT_STRING: {
+      string ret;
+      for (int64_t i = 0; i < num_elts; ++i) {
+        if (i > 0) strings::StrAppend(&ret, " ");
+        strings::StrAppend(&ret, str_util::CEscape(t.flat<tstring>()(i)));
+      }
+      return ret;
+    }
+    default: {
+      LOG(FATAL) << "Not handling type " << DataType_Name(t.dtype());
+      return string();
+    }
+  }
+}
+
+string PrintTensorProto(const TensorProto& proto) {
+  return strings::StrCat("Input::Initializer(", "{", PrintTensor(proto), "}, ",
+                         PrintTensorShape(proto.tensor_shape()),
+                         ").AsTensorProto()");
+}
+
+} // cc_op
+} // tensorflow
+
+
+namespace tensorflow {
+
+// tensorflow/tensorflow/cc/tools/freeze_saved_model.cc
+// Gets tensor names from tensor_info and inserts them into the set of tensor names.
+void GetTensorNamesFromTensorInfo(const TensorInfo& tensor_info,
+                                  std::unordered_set<string>* tensor_names) {
+  if (tensor_info.has_coo_sparse()) {
+    // If the tensor is sparse we have to add all three tensors of the sparse
+    // representations.
+    const TensorInfo_CooSparse& coo_sparse = tensor_info.coo_sparse();
+    tensor_names->insert(coo_sparse.values_tensor_name());
+    tensor_names->insert(coo_sparse.indices_tensor_name());
+    tensor_names->insert(coo_sparse.dense_shape_tensor_name());
+  } else if (tensor_info.has_composite_tensor()) {
+    for (const auto& component : tensor_info.composite_tensor().components()) {
+      tensor_names->insert(component.name());
+    }
+  } else {
+    tensor_names->insert(tensor_info.name());
+  }
+}
+
+// Gets the union of all inputs and outputs of all SignatureDefs in the bundle
+void GetSignatureDefsInputsAndOutputs(
+    const SavedModelBundle& saved_model_bundle,
+    std::unordered_set<string>* inputs, std::unordered_set<string>* outputs) {
+  for (auto& sigdef_elem : saved_model_bundle.meta_graph_def.signature_def()) {
+    const SignatureDef& signature_def = sigdef_elem.second;
+    for (auto& input_elem : signature_def.inputs()) {
+      GetTensorNamesFromTensorInfo(input_elem.second, inputs);
+    }
+    for (auto& output_elem : signature_def.outputs()) {
+      GetTensorNamesFromTensorInfo(output_elem.second, outputs);
+    }
+  }
+}
+
+} // tensorflow
+
+
 int main(int argc, char* argv[]) {
   // These are the command-line flags the program can understand.
   // They define where the graph and input data is located, and what kind of
@@ -210,12 +329,57 @@ int main(int argc, char* argv[]) {
   tensorflow::RunOptions run_options;
   tensorflow::SessionOptions session_options;
   std::string graph_path = tensorflow::io::JoinPath(root_dir, graph);
-  tensorflow::Status status = tensorflow::LoadSavedModel(
+  tensorflow::Status load_status = tensorflow::LoadSavedModel(
     session_options, 
     run_options, 
     graph_path, 
     {tensorflow::kSavedModelTagServe}, 
     &model);
+  if (!load_status.ok()) {
+    LOG(ERROR) << "LoadSavedModel failed: " << load_status;
+    return -1;
+  }
+
+  std::unordered_set<std::string> input_names, output_names;
+  tensorflow::GetSignatureDefsInputsAndOutputs(model, &input_names, &output_names);
+  for (auto it: input_names) {
+    LOG(INFO) << "input_names: " << it;
+  }
+  for (auto it: output_names) {
+    LOG(INFO) << "output_names: " << it;
+  }
+
+  if (verbose) {
+    auto meta_graph_def = model.meta_graph_def;
+    LOG(INFO) << "meta_graph_version: " << meta_graph_def.meta_info_def().meta_graph_version();
+    LOG(INFO) << "tensorflow_version: " << meta_graph_def.meta_info_def().tensorflow_version();
+    LOG(INFO) << "tensorflow_git_version: " << meta_graph_def.meta_info_def().tensorflow_git_version();
+    for (auto tag: meta_graph_def.meta_info_def().tags()) {
+      LOG(INFO) << "tags: " << tag;
+    }
+    for (auto alias: meta_graph_def.meta_info_def().function_aliases()) {
+      LOG(INFO) << "function_alias: " << alias.first << ": " << alias.second;
+    }
+    for (auto sign: meta_graph_def.signature_def()) {
+      //LOG(INFO) << "signature_def: " << it.first << ": " << it.second;
+      LOG(INFO) << "signature_def: " << sign.first;
+      LOG(INFO) << "\tmethod_name: " << sign.second.method_name();
+      LOG(INFO) << "\tinputs: ";
+      for (auto it: sign.second.inputs()) {
+        LOG(INFO) << "\t\tkey: " << it.first
+                  << ", name: " << it.second.name()
+                  << ", dtype: " << tensorflow::DataTypeString(it.second.dtype())
+                  << ", tensor_shape: " << tensorflow::cc_op::PrintTensorShape(it.second.tensor_shape());
+      }
+      LOG(INFO) << "\toutputs: ";
+      for (auto it: sign.second.outputs()) {
+        LOG(INFO) << "\t\tkey: " << it.first
+                  << ", name: " << it.second.name()
+                  << ", dtype: " << tensorflow::DataTypeString(it.second.dtype())
+                  << ", tensor_shape: " << tensorflow::cc_op::PrintTensorShape(it.second.tensor_shape());
+      }
+    }
+  }
 
   // Actually run the image through the model.
   std::vector<tensorflow::Tensor> outputs;
