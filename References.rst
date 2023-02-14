@@ -28,6 +28,9 @@ References to learning materials.
 .. [#] `Neural networks and deep learning by Michael Nielson <https://github.com/mnielsen/neural-networks-and-deep-learning>`_
 .. [#] `TensorFlow-Examples <https://github.com/aymericdamien/TensorFlow-Examples.git>`_
 .. [#] `Stanford Tensorflow tutorial <https://github.com/chiphuyen/stanford-tensorflow-tutorials.git>`_
+.. [#] `Machine learing specialization by Andrew Ng <https://github.com/kaieye/2022-Machine-Learning-Specialization>`_
+.. [#] `Deep learing specialization by Andrew Ng <https://www.bilibili.com/video/BV1pJ41127Q2>`_
+
 
 .. [#] `Machine Learning Dataset sources <http://archive.ics.uci.edu/ml/index.php>`_
 .. [#] `Fash mnist <https://github.com/zalandoresearch/fashion-mnist>`_
