@@ -222,3 +222,15 @@ Setup Tensorflow for R&D
 
         # in bash add environment variable
         export TF_CPP_MIN_LOG_LEVEL=2
+
+#. start tensorflow in jupyter notebook
+
+    .. code-block:: bash
+
+        # https://hub.docker.com/r/jupyter/tensorflow-notebook
+        docker pull jupyter/tensorflow-notebook
+
+        docker run  -p 8888:8888 -v $(pwd):/home/jovyan/work jupyter/tensorflow-notebook
+
+        # attach to the running container so as to install addtional dependencies
+        docker -exec -u root -it container_id bash
