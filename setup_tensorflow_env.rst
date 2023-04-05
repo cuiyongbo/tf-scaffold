@@ -6,7 +6,7 @@ Setup Tensorflow for R&D
 
     - install tensorflow using pip: ``pip install --upgrade tensorflow``
         - `Install tensorflow <https://tensorflow.google.cn/install>`_
-        - `install tensorflow on apple m1 machine <https://developer.apple.com/metal/tensorflow-plugin/>`_
+        - `Install tensorflow on apple m1 machine <https://developer.apple.com/metal/tensorflow-plugin/>`_
 
     - Install using docker (*recommended*)
 

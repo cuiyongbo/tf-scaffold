@@ -30,6 +30,7 @@ References to learning materials.
 .. [#] `Stanford Tensorflow tutorial <https://github.com/chiphuyen/stanford-tensorflow-tutorials.git>`_
 .. [#] `Machine learing specialization by Andrew Ng <https://github.com/kaieye/2022-Machine-Learning-Specialization>`_
 .. [#] `Deep learing specialization by Andrew Ng <https://www.bilibili.com/video/BV1pJ41127Q2>`_
+.. [#] `TensorRT下的模型量化 by 手写ai <https://www.bilibili.com/video/BV18L41197Uz>`_
 
 
 .. [#] `Machine Learning Dataset sources <http://archive.ics.uci.edu/ml/index.php>`_
