@@ -11,10 +11,10 @@
 # 		pip download tensorflow-macos
 # 	extract wheel file: python -m --extract tensorflow_macos-{version}.whl
 # 	take following directories and files:
-#		drwxr-xr-x  10 bytedance  staff   320B Jan 19 21:11 include
-#		-rw-r--r--   1 bytedance  staff    31M Jan 19 21:11 libtensorflow_framework.2.11.0.dylib
-#		-rw-r--r--   1 bytedance  staff    31M Jan 19 21:11 libtensorflow_framework.2.dylib
-#		-rw-r--r--   1 bytedance  staff    31M Jan 19 21:11 libtensorflow_framework.dylib
+#		drwxr-xr-x  10 godness  staff   320B Jan 19 21:11 include
+#		-rw-r--r--   1 godness  staff    31M Jan 19 21:11 libtensorflow_framework.2.11.0.dylib
+#		-rw-r--r--   1 godness  staff    31M Jan 19 21:11 libtensorflow_framework.2.dylib
+#		-rw-r--r--   1 godness  staff    31M Jan 19 21:11 libtensorflow_framework.dylib
 #  5. and oragnize previous files and directories as follows:
 # 		> tree -L 2 libtensorflow/
 # 		libtensorflow/
