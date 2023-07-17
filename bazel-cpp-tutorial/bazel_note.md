@@ -1,5 +1,7 @@
 # Bazel FAQs
 
+
+
 #. list all build targets
 
 ```bash
@@ -18,3 +20,9 @@ Loading: 35 packages loaded
 #. display more logs when building targets: ``bazel build --verbose_failures //tensorflow:tensorflow_cc``
 
 #. how to run test: ``bazel test //tensorflow_model_optimization/python/core/quantization/keras:quantize_functional_test`` (inherit all build opts)
+
+
+.. rubric:: Footnotes
+
+.. [#] `install bazel <https://bazel.google.cn/install>`_
+.. [#] `bazel cpp tutorial <https://bazel.build/start/cpp>`_

@@ -70,7 +70,7 @@ Setup Tensorflow for R&D
             name: y:0
         Method name is: tensorflow/serving/predict
 
-        # docker run -t --rm -p 8501:8501 -p 8500:8500 -v'/Users/bytedance/keras_data/tfhub_modules/inception_resnet_v2:/models/inception_resnet_v2' -e MODEL_NAME=inception_resnet_v2 emacski/tensorflow-serving
+        # docker run -t --rm -p 8501:8501 -p 8500:8500 -v'/Users/cherry/keras_data/tfhub_modules/inception_resnet_v2:/models/inception_resnet_v2' -e MODEL_NAME=inception_resnet_v2 emacski/tensorflow-serving
 
         # Start TensorFlow Serving container and open the REST API port
         docker run -t --rm -p 8501:8501 \
