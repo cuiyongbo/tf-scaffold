@@ -1,5 +1,45 @@
 # Tensorflow Serving inference tutorial
 
+**USE server log to trace how to load a model**
+
+## 编译 tensorflow-serving
+
+```bash
+# install package dependencies according to Dockerfile
+
+# less serving/WORKSPACE 
+# Check bazel version requirement, which is stricter than TensorFlow's.
+load("@bazel_skylib//lib:versions.bzl", "versions")
+versions.check("6.1.0")
+
+# run bazel commands with ``--experimental_repo_remote_exec`` to avoid failure
+
+# list all build targets
+./tools/run_in_docker.sh bazel query tensorflow_serving/... --experimental_repo_remote_exec --verbose_failures
+
+# display the location of a build target
+./tools/run_in_docker.sh bazel cquery //tensorflow_serving/model_servers:tensorflow_model_server --experimental_repo_remote_exec --output=files
+# bazel-out/k8-opt/bin/tensorflow_serving/model_servers/tensorflow_model_server
+
+# build a specified target
+./tools/run_in_docker.sh bazel build --config=nativeopt //tensorflow_serving/model_servers:tensorflow_model_server --experimental_repo_remote_exec --verbose_failures --copt=-Wno-error=maybe-uninitialized
+./tools/run_in_docker.sh bazel build --config=nativeopt //tensorflow_serving/example:resnet_client_cc --experimental_repo_remote_exec --verbose_failures
+
+# build in background
+nohup bazel build --config=nativeopt //tensorflow_serving/model_servers:tensorflow_model_server --experimental_repo_remote_exec --verbose_failures --copt=-Wno-error=maybe-uninitialized >&1 2>&1 > compilation.log &
+
+nohup bazel build //tensorflow_serving/model_servers:tensorflow_model_server \
+    --config=nativeopt \
+    --verbose_failures \
+    --experimental_repo_remote_exec \
+    --copt=-Wno-error=maybe-uninitialized \
+    --experimental_local_memory_estimate \
+    --host_jvmopt=-Xmx10g \
+    --local_ram_resources=HOST_RAM*0.8 \
+     >&1 2>&1 > compilation.log &
+```
+
+
 ## 开发环境
 
 ```bash

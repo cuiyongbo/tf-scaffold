@@ -20,6 +20,13 @@ Setup Tensorflow for R&D
         - ``pip install tensorflow-datasets``: The stable version, released every few months.
         - ``pip install tfds-nightly``: Released every day, contains the last versions of the datasets.
 
+    .. code-block:: sh
+
+        pip3 install "tensorflow>=2.0.0"
+        pip3 install --upgrade tensorflow-hub
+        pip3 install tensorflow-datasets
+        pip3 install --user --upgrade tensorflow-model-optimization
+
 #. start tfx container
 
     .. code-block:: bash

@@ -29,7 +29,7 @@ ____Elapsed time: 0,400s, Critical Path: 0,01s
 
 In the run log above you can see where the executable was built so you can locate it and use it.
 
-You can also get the output path with the bazel cquery command. For
+You can also get the output path with the ``bazel cquery`` command. For
 example, the command below would print the path to the output file. This
 is a useful technique for use in scripts, where you do not want to parse the
 `bazel build` output.
