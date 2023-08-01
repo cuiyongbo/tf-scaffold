@@ -174,4 +174,21 @@ A:In TensorFlow, the terms "classification," "prediction," and "regression" refe
 
 What does MPS stand for PyTorch?
 PyTorch uses the new Metal Performance Shaders (MPS) backend for GPU training acceleration.
+
+Q:what is transformer in nlp domain? please recommend some learning materials
+A:在自然语言处理（NLP）领域，Transformer是一种用于处理序列数据的深度学习模型，特别是在机器翻译、文本生成和语言理解等任务中取得了重大突破。Transformer模型由Google在2017年提出，其核心思想是使用自注意力机制（self-attention）来捕捉输入序列中的上下文关系。
+
+相比于传统的循环神经网络（RNN）模型，Transformer模型具有以下优势：
+- 并行计算：Transformer模型可以并行计算输入序列中的所有位置，而不需要按顺序逐个计算。
+- 长期依赖：Transformer模型通过自注意力机制可以捕捉到输入序列中不同位置之间的长期依赖关系。
+- 编码器-解码器结构：Transformer模型通常采用编码器-解码器结构，适用于序列到序列的任务，如机器翻译。
+
+关于Transformer模型的学习材料，以下是一些推荐的资源：
+1. "Attention Is All You Need" 论文：这是Transformer模型最初提出的论文，详细介绍了Transformer的原理和架构。你可以在arXiv上找到这篇论文。
+2. "The Illustrated Transformer" 博客文章：这是一篇图文并茂的博客文章，通过可视化的方式解释了Transformer模型的工作原理。你可以在该博客文章中深入了解Transformer的细节。
+3. "Transformer Model for Language Understanding" TensorFlow教程：这是TensorFlow官方提供的教程，介绍了如何使用TensorFlow实现Transformer模型进行语言理解任务。你可以在TensorFlow官方网站上找到这个教程。
+4. "Attention and Augmented Recurrent Neural Networks" 论文：这是一篇关于自注意力机制的综述论文，其中包括Transformer模型的介绍和其他相关模型的比较。你可以在arXiv上找到这篇论文。
+
+通过阅读这些学习材料，你将能够深入了解Transformer模型在NLP领域的应用和原理
+
 ```

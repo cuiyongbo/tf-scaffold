@@ -2,10 +2,28 @@
 
 **USE server log to trace how to load a model**
 
+
+## devbox setup
+
+```bash
+
+# ~/.bash_profile
+# display IP in bash prompt
+export PS1='\u@$(hostname -I) \w\n> '
+# sugar commands
+alias cdw='cd /home/$USER/workspace'
+alias ll='ls -lh'
+alias grep='grep --color'
+alias tailf='tail -f'
+export TFHUB_CACHE_DIR=/home/$USER/workspace/keras_store/tfhub_models
+source /usr/local/lib/bazel/bin/bazel-complete.bash
+```
+
 ## 编译 tensorflow-serving
 
 ```bash
-# install package dependencies according to Dockerfile
+# install package dependencies according to Dockerfile: tensorflow/serving/tensorflow_serving/tools/docker/Dockerfile.devel
+# or from Dockerfile of tensorflow/serving from docker hub: https://hub.docker.com/r/tensorflow/serving
 
 # less serving/WORKSPACE 
 # Check bazel version requirement, which is stricter than TensorFlow's.
@@ -22,21 +40,27 @@ versions.check("6.1.0")
 # bazel-out/k8-opt/bin/tensorflow_serving/model_servers/tensorflow_model_server
 
 # build a specified target
-./tools/run_in_docker.sh bazel build --config=nativeopt //tensorflow_serving/model_servers:tensorflow_model_server --experimental_repo_remote_exec --verbose_failures --copt=-Wno-error=maybe-uninitialized
-./tools/run_in_docker.sh bazel build --config=nativeopt //tensorflow_serving/example:resnet_client_cc --experimental_repo_remote_exec --verbose_failures
+./tools/run_in_docker.sh bazel build --config=release //tensorflow_serving/model_servers:tensorflow_model_server --experimental_repo_remote_exec --verbose_failures --copt=-Wno-error=maybe-uninitialized
+./tools/run_in_docker.sh bazel build --config=release //tensorflow_serving/example:resnet_client_cc --experimental_repo_remote_exec --verbose_failures
 
 # build in background
-nohup bazel build --config=nativeopt //tensorflow_serving/model_servers:tensorflow_model_server --experimental_repo_remote_exec --verbose_failures --copt=-Wno-error=maybe-uninitialized >&1 2>&1 > compilation.log &
+nohup bazel build --config=release //tensorflow_serving/model_servers:tensorflow_model_server >&1 2>&1 > compilation.log &
+# re-run bazel build with `--experimental_local_memory_estimate --local_ram_resources=HOST_RAM*0.8` if compilation failed
+nohup bazel build --config=release //tensorflow_serving/model_servers:tensorflow_model_server --experimental_repo_remote_exec --experimental_local_memory_estimate --local_ram_resources=HOST_RAM*0.8 >&1 2>&1 > compilation.log &
 
-nohup bazel build //tensorflow_serving/model_servers:tensorflow_model_server \
-    --config=nativeopt \
-    --verbose_failures \
-    --experimental_repo_remote_exec \
-    --copt=-Wno-error=maybe-uninitialized \
-    --experimental_local_memory_estimate \
-    --host_jvmopt=-Xmx10g \
-    --local_ram_resources=HOST_RAM*0.8 \
-     >&1 2>&1 > compilation.log &
+bazel build --config=release //tensorflow_serving/model_servers:tensorflow_model_server --experimental_repo_remote_exec --experimental_local_memory_estimate --local_ram_resources=HOST_RAM*0.8
+
+# git diff
+diff --git a/.bazelrc b/.bazelrc
+index 085f520b..1c21ad50 100644
+--- a/.bazelrc
++++ b/.bazelrc
+@@ -65,6 +65,8 @@ build --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=0
+ 
+ build --experimental_repo_remote_exec
++build --local_ram_resources=HOST_RAM*0.8
++build --experimental_local_memory_estimate
+
 ```
 
 

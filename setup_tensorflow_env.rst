@@ -25,7 +25,11 @@ Setup Tensorflow for R&D
         pip3 install "tensorflow>=2.0.0"
         pip3 install --upgrade tensorflow-hub
         pip3 install tensorflow-datasets
-        pip3 install --user --upgrade tensorflow-model-optimization
+        pip3 install --upgrade tensorflow-model-optimization
+        pip3 install tfds-nightly
+        pip3 install tensorflow-text
+        pip3 install tensorflow_addons
+        pip3 install tf-models-official
 
 #. start tfx container
 
