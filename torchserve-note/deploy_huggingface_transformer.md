@@ -234,6 +234,17 @@ torchserve --start --ncs --model-store=no-archive --models bge_large_zh=bge_larg
 
 API 介绍: [torchserve REST API](https://pytorch.org/serve/rest_api.html)
 
+部署镜像:
+
+```Dockerfile
+FROM pytorch/torchserve:0.8.1-gpu
+USER root
+#ENV PIP_INDEX_URL=https://***/pypi/simple/ # switch to private source
+RUN apt-get update && apt-get install -yq --no-install-recommends curl wget less
+RUN pip3 install --upgrade pip && pip3 install --no-cache-dir sentence_transformers==2.2.2
+```
+
+
 ```bash
 # 请求方式1: 上传文件
 echo '{"input":"教练, 我想打篮球."}' > note.txt
