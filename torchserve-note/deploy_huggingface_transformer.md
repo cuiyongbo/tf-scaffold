@@ -30,6 +30,7 @@
 
 - 参考: [how to write custom handler](https://pytorch.org/serve/custom_service.html)
 - [bge 模型 handler 示例](./bge_handler.py)
+- [amu/tao-8k 模型 handler 示例](./tao_8k_handler.py)
 
 
 
