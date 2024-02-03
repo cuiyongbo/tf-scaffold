@@ -2,8 +2,6 @@
 
 References to learning materials.
 
-.. rubric:: Footnotes
-
 - [tensorflow homepage](https://tensorflow.google.cn/)
 - [tensorflow tutorial](https://www.tensorflow.org/tutorials)
 - [tensorflow architecture](https://github.com/tensorflow/docs/blob/master/site/en/r1/guide/extend/architecture.md)
@@ -15,13 +13,13 @@ References to learning materials.
 - [Machine Learning 101](https://leetcode.com/explore/learn/card/machine-learning-101/)
 - [Neural networks by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
 - [neural networks and deep learning by michael nielsen](http://neuralnetworksanddeeplearning.com/chap1.html)
+- [Neural networks and deep learning by Michael Nielson](https://github.com/mnielsen/neural-networks-and-deep-learning)
 - [tensorflow - learning ML](https://tensorflow.google.cn/resources/learn-ml?hl=en)
 - [Google ML crash course](https://developers.google.cn/machine-learning/crash-course)
 - [Deep Learning from MIT](https://github.com/janishar/mit-deep-learning-book-pdf.git)
 - [The Hundred-Page Machine Learning Book](http://themlbook.com/wiki/doku.php)
 - [The Hundred-Page Machine Learning on Github](https://github.com/aburkov/theMLbook)
 - [Machine learning by Tom Mitchell](http://www.cs.cmu.edu/~tom/NewChapters.html)
-- [Neural networks and deep learning by Michael Nielson](https://github.com/mnielsen/neural-networks-and-deep-learning)
 - [TensorFlow-Examples](https://github.com/aymericdamien/TensorFlow-Examples.git)
 - [Stanford Tensorflow tutorial](https://github.com/chiphuyen/stanford-tensorflow-tutorials.git)
 - [Machine learing specialization by Andrew Ng](https://github.com/kaieye/2022-Machine-Learning-Specialization)
